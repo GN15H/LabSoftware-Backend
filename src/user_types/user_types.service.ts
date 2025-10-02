@@ -16,8 +16,9 @@ export class UserTypesService {
     return await this.prisma.user_Types.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userType`;
+  async findOne(id: number) {
+    // return `This action returns a #${id} userType`;
+    return await this.prisma.user_Types.findUnique({ where: { id: id } });
   }
 
   update(id: number, updateUserTypeDto: UpdateUserTypeDto) {

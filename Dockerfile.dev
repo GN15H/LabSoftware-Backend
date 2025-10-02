@@ -1,0 +1,22 @@
+# Dockerfile.dev
+FROM node:20-alpine
+
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy prisma schema (needed for prisma generate)
+COPY prisma ./prisma/
+RUN npx prisma generate
+
+# Copy source (in dev, this will be overridden by a volume anyway)
+COPY . .
+
+# Expose NestJS port
+EXPOSE 3000
+
+# Start in development mode (with hot reload)
+CMD ["npm", "run", "start:dev"]
+
