@@ -1,15 +1,31 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-// import { UsersModule } from './users/users.module';
-// import { UserTypesModule } from './user_types/user_types.module';
+import { UsersModule } from './users/users.module';
+import { UserTypesModule } from './user_types/user_types.module';
+import { ServicesModule } from './services/services.module';
+import { SpecialtiesModule } from './specialties/specialties.module';
+import { VehicleTypesModule } from './vehicle-types/vehicle-types.module';
+import { SupplyTypesModule } from './supply-types/supply-types.module';
+import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 
 @Module({
-  imports: [/*UsersModule, UserTypesModule, */AuthModule, ConfigModule.forRoot()],
+  imports: [
+    PrismaModule,
+    UsersModule,
+    UserTypesModule,
+    ServicesModule,
+    SpecialtiesModule,
+    VehicleTypesModule,
+    SupplyTypesModule,
+    AuthModule,
+    ConfigModule.forRoot()
+  ],
   controllers: [AppController],
   providers: [AppService,
     {

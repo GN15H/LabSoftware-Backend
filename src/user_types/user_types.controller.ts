@@ -2,16 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserTypesService } from './user_types.service';
 import { CreateUserTypeDto } from './dto/create-user_type.dto';
 import { UpdateUserTypeDto } from './dto/update-user_type.dto';
+import { UnAuth } from 'src/app.decorator';
 
 @Controller('user-types')
 export class UserTypesController {
-  constructor(private readonly userTypesService: UserTypesService) {}
+  constructor(private readonly userTypesService: UserTypesService) { }
 
   @Post()
   create(@Body() createUserTypeDto: CreateUserTypeDto) {
     return this.userTypesService.create(createUserTypeDto);
   }
 
+  @UnAuth()
   @Get()
   findAll() {
     return this.userTypesService.findAll();
