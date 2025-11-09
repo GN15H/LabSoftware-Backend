@@ -1,3 +1,5 @@
+import { Appointment } from "src/appointments/entities/appointment.entity";
+
 interface IUser {
   id: number;
   dni: string;
@@ -7,26 +9,29 @@ interface IUser {
   password: string;
   birthDate: Date;
   userTypeId: number;
+  Appointments?: Appointment[];
 }
 
 export class User {
   id: number;
   dni: string;
   name: string;
-  lastName: string;
+  last_name: string;
   email: string;
   password: string;
-  birthDate: Date;
-  userTypeId: number;
+  birth_date: Date;
+  user_type_id: number;
+  Appointments?: Appointment[]
 
-  constructor({ id, dni, name, lastName, email, password, birthDate, userTypeId }: IUser) {
+  constructor({ id, dni, name, Appointments, lastName, email, password, birthDate, userTypeId }: IUser) {
     this.id = id;
     this.dni = dni;
     this.name = name;
-    this.lastName = lastName;
+    this.last_name = lastName;
     this.email = email;
     this.password = password;
-    this.birthDate = birthDate;
-    this.userTypeId = userTypeId;
+    this.birth_date = birthDate;
+    this.user_type_id = userTypeId;
+    this.Appointments = Appointments;
   }
 }

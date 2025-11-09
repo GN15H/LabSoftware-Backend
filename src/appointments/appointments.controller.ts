@@ -5,7 +5,7 @@ import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 
 @Controller('appointments')
 export class AppointmentsController {
-  constructor(private readonly appointmentsService: AppointmentsService) {}
+  constructor(private readonly appointmentsService: AppointmentsService) { }
 
   @Post()
   create(@Body() createAppointmentDto: CreateAppointmentDto) {
@@ -20,6 +20,11 @@ export class AppointmentsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.appointmentsService.findOne(+id);
+  }
+
+  @Get('user/:id')
+  getByUser(@Param('id') id: string) {
+    return this.appointmentsService.findByUser(+id);
   }
 
   @Patch(':id')

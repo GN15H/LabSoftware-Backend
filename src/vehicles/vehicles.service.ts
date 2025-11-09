@@ -5,16 +5,16 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class VehiclesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   create(createVehicleDto: CreateVehicleDto) {
     return this.prisma.vehicles.create({
       data: createVehicleDto,
-      include: {
-        Vehicle_Types: true,
-        Users: true,
-        Appointments: true
-      }
+      // include: {
+      //   Vehicle_Types: true,
+      //   Users: true,
+      //   Appointments: true
+      // }
     });
   }
 
@@ -37,6 +37,14 @@ export class VehiclesService {
         Appointments: true
       }
     });
+  }
+
+  findByUser(id: number) {
+    return this.prisma.vehicles.findMany({
+      where: {
+        owner_id: { equals: id }
+      }
+    })
   }
 
   update(id: number, updateVehicleDto: UpdateVehicleDto) {

@@ -10,7 +10,7 @@ export class UsersService {
   constructor(private prisma: PrismaService) { }
 
   async create(createUserDto: CreateUserDto) {
-    await this.prisma.users.create({
+    const createdUser = await this.prisma.users.create({
       data: {
         dni: createUserDto.dni,
         name: createUserDto.name,
@@ -22,7 +22,7 @@ export class UsersService {
       }
     });
 
-    return 'This action adds a new user';
+    return createdUser;
   }
 
   async findAll() {

@@ -1,21 +1,26 @@
-import { IsDateString, IsInt, IsPositive } from 'class-validator';
+import { IsDateString, IsInt, IsNotEmpty, IsPositive } from 'class-validator';
 
 export class CreateAppointmentDto {
+    @IsNotEmpty()
     @IsDateString()
     appointment_date: string;
 
-    @IsInt()
-    @IsPositive()
-    mechanic_id: number;
+    // @IsNotEmpty()
+    // @IsInt()
+    // @IsPositive()
+    // mechanic_id: number;
 
-    @IsInt()
-    @IsPositive()
-    bay_id: number;
+    // @IsNotEmpty()
+    // @IsInt()
+    // @IsPositive()
+    // bay_id: number;
 
-    @IsInt()
-    @IsPositive()
-    appointment_state_id: number;
+    // @IsNotEmpty()
+    // @IsInt()
+    // @IsPositive()
+    // appointment_state_id: number;
 
+    @IsNotEmpty()
     @IsInt()
     @IsPositive()
     vehicle_id: number;

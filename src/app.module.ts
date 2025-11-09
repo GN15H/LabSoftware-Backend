@@ -13,6 +13,9 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
+import { VehiclesModule } from './vehicles/vehicles.module';
+import { AppointmentStatesModule } from './appointment-states/appointment-states.module';
+import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import { AuthGuard } from './auth/auth.guard';
     VehicleTypesModule,
     SupplyTypesModule,
     AuthModule,
+    VehiclesModule,
+    AppointmentsModule,
+    AppointmentStatesModule,
     ConfigModule.forRoot()
   ],
   controllers: [AppController],

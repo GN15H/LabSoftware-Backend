@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ServicesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createServiceDto: CreateServiceDto) {
     // Verificar si ya existe un servicio con el mismo nombre
@@ -34,11 +34,11 @@ export class ServicesService {
   findAll() {
     return this.prisma.services.findMany({
       include: {
-        Appointment_Services: {
-          include: {
-            Appointments: true
-          }
-        }
+        // Appointment_Services: {
+        //   include: {
+        //     Appointments: true
+        //   }
+        // }
       }
     });
   }
