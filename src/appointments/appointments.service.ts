@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Appointment } from './entities/appointment.entity';
 import { CreateAppointment } from './domain/CreateAppointment';
 
 @Injectable()
@@ -30,10 +29,8 @@ export class AppointmentsService {
     if (resources.bay == null) return "No hay bahias"
     if (resources.mechanic == null) return "No hay mecanicos"
 
-    return this.prisma.appointments.create({
+    const appointment = await this.prisma.appointments.create({
       data: {
-        // ...createAppointmentDto,
-        // appointment_date: new Date(createAppointmentDto.appointment_date)
         appointment_date: new Date(createAppointmentDto.appointment_date),
         mechanic_id: resources.mechanic.id,
         bay_id: resources.bay.id,
@@ -41,10 +38,57 @@ export class AppointmentsService {
         vehicle_id: createAppointmentDto.vehicle_id
       }
     });
+    const service = await this.prisma.appointment_Services.create({
+      data: {
+        appointment_id: appointment.id,
+        service_id: createAppointmentDto.service
+      }
+    })
+
+    return appointment;
   }
 
-  findAll() {
-    return this.prisma.appointments.findMany({
+
+  async update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
+    const mechanics = await this.prisma.users.findMany({
+      where: {
+        user_type_id: {
+          equals: 2
+        }
+      },
+      include: {
+        Appointments: true
+      }
+    })
+    const bays = await this.prisma.bays.findMany({
+      include: {
+        Appointments: true
+      }
+    })
+    const cond = new CreateAppointment();
+    const resources = cond.getAvailableResources(mechanics, bays, new Date(updateAppointmentDto.appointment_date))
+    if (resources.bay == null) return { response: "No hay bahias" }
+    if (resources.mechanic == null) return { response: "No hay mecanicos" }
+
+    return this.prisma.appointments.update({
+      where: { id },
+      data: {
+        appointment_date: new Date(updateAppointmentDto.appointment_date)
+      }
+    });
+  }
+
+  accept(id: number) {
+    return this.prisma.appointments.update({
+      where: { id },
+      data: {
+        appointment_state_id: 7
+      }
+    })
+  }
+
+  async findAll() {
+    const data = await this.prisma.appointments.findMany({
       include: {
         Users: true,
         Bays: true,
@@ -62,6 +106,14 @@ export class AppointmentsService {
         }
       }
     });
+    console.log(data);
+    return data.map(d => ({
+      ...d,
+      // Appointment_Services:{
+      //   // d.Appoin
+      // }
+
+    }))
   }
 
   async findByUser(id: number) {
@@ -77,11 +129,24 @@ export class AppointmentsService {
         Vehicles: true,
         Bays: true,
         Users: true,
-        Appointment_Services: true,
+        Appointment_Services: {
+          include: {
+            Services: true
+          }
+        },
         Appointment_Procedures: true,
+        Payments: true,
       }
     })
-    return data;
+    return data.map(d => (
+      {
+        ...d,
+        Payments: d.Payments.map(p => ({
+          ...p,
+          total: p.total.toString()
+        })),
+      }
+    ))
   }
 
   findOne(id: number) {
@@ -106,18 +171,14 @@ export class AppointmentsService {
     });
   }
 
-  update(id: number, updateAppointmentDto: UpdateAppointmentDto) {
-    return this.prisma.appointments.update({
-      where: { id },
-      data: {
-        ...updateAppointmentDto,
-        appointment_date: updateAppointmentDto.appointment_date ?
-          new Date(updateAppointmentDto.appointment_date) : undefined
-      }
-    });
-  }
+  async remove(id: number) {
+    await this.prisma.appointment_Services.deleteMany({
+      where: {
+        appointment_id: id
+      },
+    })
 
-  remove(id: number) {
+
     return this.prisma.appointments.delete({
       where: { id }
     });

@@ -20,7 +20,10 @@ export class ServicesService {
     }
 
     return this.prisma.services.create({
-      data: createServiceDto,
+      data: {
+        ...createServiceDto,
+        price: BigInt(createServiceDto.price)
+      },
       include: {
         Appointment_Services: {
           include: {
@@ -75,7 +78,11 @@ export class ServicesService {
 
     return this.prisma.services.update({
       where: { id },
-      data: updateServiceDto,
+      data: {
+        name: updateServiceDto.name,
+        // ...updateServiceDto,
+        price: BigInt(updateServiceDto.price)
+      },
       include: {
         Appointment_Services: {
           include: {

@@ -1,6 +1,5 @@
 generator client {
   provider      = "prisma-client-js"
-  // output        = "../generated/prisma"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -100,6 +99,7 @@ model Mechanics_Specialties {
 model Services {
   id                   Int                    @id @default(autoincrement())
   name                 String                 @db.VarChar(30)
+  price                BigInt
   Appointment_Services Appointment_Services[]
 }
 

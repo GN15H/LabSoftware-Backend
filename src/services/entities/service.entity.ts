@@ -3,7 +3,8 @@ import { AppointmentService } from '../../appointment-services/entities/appointm
 export class Service {
   id: number;
   name: string;
-  
+  price: BigInt;
+
   // Relations
   Appointment_Services?: AppointmentService[];
 }

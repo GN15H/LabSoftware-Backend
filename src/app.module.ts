@@ -16,6 +16,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { AppointmentStatesModule } from './appointment-states/appointment-states.module';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { AppointmentsModule } from './appointments/appointments.module';
     VehiclesModule,
     AppointmentsModule,
     AppointmentStatesModule,
-    ConfigModule.forRoot()
+    ConfigModule.forRoot(),
+    PaymentsModule
   ],
   controllers: [AppController],
   providers: [AppService,

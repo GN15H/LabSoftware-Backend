@@ -22,6 +22,11 @@ export class AppointmentsController {
     return this.appointmentsService.findOne(+id);
   }
 
+  @Get('accept/:id')
+  accept(@Param('id') id: string) {
+    return this.appointmentsService.accept(+id);
+  }
+
   @Get('user/:id')
   getByUser(@Param('id') id: string) {
     return this.appointmentsService.findByUser(+id);
