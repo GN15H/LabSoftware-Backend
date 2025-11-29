@@ -17,6 +17,8 @@ import { VehiclesModule } from './vehicles/vehicles.module';
 import { AppointmentStatesModule } from './appointment-states/appointment-states.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { PaymentsModule } from './payments/payments.module';
+import { SuppliesModule } from './supplies/supplies.module';
+import { SuppliersModule } from './suppliers/suppliers.module';
 
 @Module({
   imports: [
@@ -31,8 +33,11 @@ import { PaymentsModule } from './payments/payments.module';
     VehiclesModule,
     AppointmentsModule,
     AppointmentStatesModule,
+    SuppliesModule,
+    SuppliersModule,
     ConfigModule.forRoot(),
-    PaymentsModule
+    PaymentsModule,
+    SuppliersModule
   ],
   controllers: [AppController],
   providers: [AppService,

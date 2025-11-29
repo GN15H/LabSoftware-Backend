@@ -122,6 +122,9 @@ model Supplies {
   name                 String                 @db.VarChar(30)
   supplier_id          Int
   supply_type_id       Int
+  amount               Int
+  min_stock            Int
+  price                Int
   Appointment_Supplies Appointment_Supplies[]
   Suppliers            Suppliers              @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Supplies_ibfk_1")
   Supply_Types         Supply_Types           @relation(fields: [supply_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Supplies_ibfk_2")

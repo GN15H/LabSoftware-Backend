@@ -10,6 +10,7 @@ interface IUser {
   birthDate: Date;
   userTypeId: number;
   Appointments?: Appointment[];
+  userType?: string;
 }
 
 export class User {
@@ -22,8 +23,9 @@ export class User {
   birth_date: Date;
   user_type_id: number;
   Appointments?: Appointment[]
+  userType?: string;
 
-  constructor({ id, dni, name, Appointments, lastName, email, password, birthDate, userTypeId }: IUser) {
+  constructor({ id, dni, name, Appointments, lastName, email, password, birthDate, userTypeId, userType }: IUser) {
     this.id = id;
     this.dni = dni;
     this.name = name;
@@ -33,5 +35,6 @@ export class User {
     this.birth_date = birthDate;
     this.user_type_id = userTypeId;
     this.Appointments = Appointments;
+    this.userType = userType;
   }
 }

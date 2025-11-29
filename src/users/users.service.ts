@@ -18,7 +18,7 @@ export class UsersService {
         email: createUserDto.email,
         password: createUserDto.password,
         birth_date: createUserDto.birthDate,
-        user_type_id: 3
+        user_type_id: createUserDto.userType ?? 3
       }
     });
 
@@ -40,6 +40,8 @@ export class UsersService {
     const user = await this.prisma.users.findUnique({
       where: {
         email: email
+      }, include: {
+        User_Types: true
       }
     })
     return user != null ? new User({
@@ -50,7 +52,8 @@ export class UsersService {
       email: user.email,
       password: user.password,
       birthDate: user.birth_date,
-      userTypeId: user.user_type_id
+      userTypeId: user.user_type_id,
+      userType: user.User_Types.name ?? ''
     }) : null;
   }
 

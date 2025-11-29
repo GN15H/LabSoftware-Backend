@@ -9,7 +9,6 @@ export class PaymentsService {
   constructor(private service: PrismaService) { }
 
   async create(createPaymentDto: CreatePaymentDto) {
-    console.log("chicos??");
     const payment = await this.service.payments.create({
       data: {
         total: BigInt(createPaymentDto.total),

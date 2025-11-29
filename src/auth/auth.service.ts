@@ -11,6 +11,11 @@ export class AuthService {
     // private configService: ConfigService
   ) { }
 
+  async profile(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    return user;
+  }
+
   async signIn(
     username: string,
     pass: string,

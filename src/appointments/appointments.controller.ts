@@ -1,7 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { UpdateAppointmentDto, UpdateAppointmentStateDto } from './dto/update-appointment.dto';
+import { CreateProcAndServDto } from './dto/create-proc-serv.dto';
 
 @Controller('appointments')
 export class AppointmentsController {
@@ -10,6 +11,11 @@ export class AppointmentsController {
   @Post()
   create(@Body() createAppointmentDto: CreateAppointmentDto) {
     return this.appointmentsService.create(createAppointmentDto);
+  }
+
+  @Post('procedures-services/:id')
+  createProceduresAndServices(@Param('id') id: string, @Body() createProceduresAndServices: CreateProcAndServDto) {
+    return this.appointmentsService.createProcAndServ(+id, createProceduresAndServices);
   }
 
   @Get()
@@ -27,9 +33,20 @@ export class AppointmentsController {
     return this.appointmentsService.accept(+id);
   }
 
+  @Patch('change-state/:id')
+  changeState(@Param('id') id: string, @Body() updateAppointmentStateDto: UpdateAppointmentStateDto) {
+    // return this.appointmentsService.changeState(+id, updateAppointmentStateDto);
+    return this.appointmentsService.changeState(+id, updateAppointmentStateDto);
+  }
+
   @Get('user/:id')
   getByUser(@Param('id') id: string) {
     return this.appointmentsService.findByUser(+id);
+  }
+
+  @Get('mechanic/:id')
+  getByMechanic(@Param('id') id: string) {
+    return this.appointmentsService.findByMechanic(+id);
   }
 
   @Patch(':id')

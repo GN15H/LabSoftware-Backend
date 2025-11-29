@@ -1,13 +1,12 @@
-import { Supply } from '../../supplies/entities/supply.entity';
+import { Supply } from "src/supplies/entities/supply.entity";
+
 
 export class Supplier {
-    id: number;
-    name: string;
-    contact_info: string;
-    address: string;
-    phone: string;
-    email: string;
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
 
-    // Relations
-    supplies?: Supply[];
+  //relations
+  supplies?: Supply[];
 }

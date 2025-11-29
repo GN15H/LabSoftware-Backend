@@ -9,7 +9,6 @@ export class PaymentsController {
 
   @Post()
   create(@Body() createPaymentDto: CreatePaymentDto) {
-    console.log(createPaymentDto);
     return this.paymentsService.create(createPaymentDto);
   }
 

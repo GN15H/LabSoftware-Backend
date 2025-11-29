@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { UpdateAppointmentDto, UpdateAppointmentStateDto } from './dto/update-appointment.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAppointment } from './domain/CreateAppointment';
+import { CreateProcAndServDto } from './dto/create-proc-serv.dto';
 
 @Injectable()
 export class AppointmentsService {
@@ -38,7 +39,7 @@ export class AppointmentsService {
         vehicle_id: createAppointmentDto.vehicle_id
       }
     });
-    const service = await this.prisma.appointment_Services.create({
+    await this.prisma.appointment_Services.create({
       data: {
         appointment_id: appointment.id,
         service_id: createAppointmentDto.service
@@ -46,6 +47,38 @@ export class AppointmentsService {
     })
 
     return appointment;
+  }
+
+  async createProcAndServ(id: number, body: CreateProcAndServDto) {
+    const procedure = await this.prisma.appointment_Procedures.create({
+      data: {
+        description: body.description,
+        appointment_id: id
+      }
+    })
+
+
+    for (const supplyItem of body.supplies) {
+      await this.prisma.appointment_Supplies.create({
+        data: {
+          supply_id: supplyItem.supply_id,
+          supply_amount: supplyItem.amount,
+          appointment_id: id
+        }
+      })
+      const fetchedSupply = await this.prisma.supplies.findUnique({
+        where: { id: supplyItem.supply_id }
+      })
+      await this.prisma.supplies.update({
+        where: { id: supplyItem.supply_id },
+        data: {
+          amount: fetchedSupply!.amount - supplyItem.amount
+        }
+      })
+    }
+    return {
+      ...procedure,
+    }
   }
 
 
@@ -87,11 +120,25 @@ export class AppointmentsService {
     })
   }
 
+  async changeState(id: number, updateAppointmentStateDto: UpdateAppointmentStateDto) {
+    const state = await this.prisma.appointment_States.findMany({
+      where: { name: updateAppointmentStateDto.appointment_state }
+    })
+
+    return this.prisma.appointments.update({
+      where: { id },
+      data: {
+        appointment_state_id: state[0].id
+      }
+    })
+  }
+
   async findAll() {
     const data = await this.prisma.appointments.findMany({
       include: {
         Users: true,
         Bays: true,
+        Payments: true,
         Appointment_States: true,
         Vehicles: true,
         Appointment_Services: {
@@ -106,7 +153,6 @@ export class AppointmentsService {
         }
       }
     });
-    console.log(data);
     return data.map(d => ({
       ...d,
       // Appointment_Services:{
@@ -124,6 +170,35 @@ export class AppointmentsService {
             equals: id
           }
         }
+      },
+      include: {
+        Vehicles: true,
+        Bays: true,
+        Users: true,
+        Appointment_Services: {
+          include: {
+            Services: true
+          }
+        },
+        Appointment_Procedures: true,
+        Payments: true,
+      }
+    })
+    return data.map(d => (
+      {
+        ...d,
+        Payments: d.Payments.map(p => ({
+          ...p,
+          total: p.total.toString()
+        })),
+      }
+    ))
+  }
+
+  async findByMechanic(id: number) {
+    const data = await this.prisma.appointments.findMany({
+      where: {
+        mechanic_id: { equals: id }
       },
       include: {
         Vehicles: true,

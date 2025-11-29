@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateAppointmentDto {
   @IsNotEmpty()
@@ -19,4 +19,10 @@ export class UpdateAppointmentDto {
   // @IsInt()
   // @IsPositive()
   // appointment_state_id: number;
+}
+
+export class UpdateAppointmentStateDto {
+  @IsNotEmpty()
+  @IsString()
+  appointment_state: string;
 }
