@@ -6,6 +6,7 @@ export class Supplier {
   name: string;
   email: string;
   phone: string;
+  active: boolean;
 
   //relations
   supplies?: Supply[];

@@ -22,7 +22,8 @@ export class ServicesService {
     return this.prisma.services.create({
       data: {
         ...createServiceDto,
-        price: BigInt(createServiceDto.price)
+        price: BigInt(createServiceDto.price),
+        active: true
       },
       include: {
         Appointment_Services: {
@@ -36,6 +37,9 @@ export class ServicesService {
 
   findAll() {
     return this.prisma.services.findMany({
+      where: {
+        active: true
+      },
       include: {
         // Appointment_Services: {
         //   include: {
@@ -95,18 +99,22 @@ export class ServicesService {
 
   async remove(id: number) {
     // Verificar si el servicio está siendo utilizado en alguna cita
-    const serviceInUse = await this.prisma.appointment_Services.findFirst({
-      where: {
-        service_id: id
+
+    // const serviceInUse = await this.prisma.appointment_Services.findFirst({
+    //   where: {
+    //     service_id: id
+    //   }
+    // });
+    //
+    // if (serviceInUse) {
+    //   throw new ConflictException('No se puede eliminar un servicio que está siendo utilizado en citas');
+    // }
+
+    return this.prisma.services.update({
+      where: { id },
+      data: {
+        active: false,
       }
-    });
-
-    if (serviceInUse) {
-      throw new ConflictException('No se puede eliminar un servicio que está siendo utilizado en citas');
-    }
-
-    return this.prisma.services.delete({
-      where: { id }
     });
   }
 }

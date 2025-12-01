@@ -18,7 +18,8 @@ export class UsersService {
         email: createUserDto.email,
         password: createUserDto.password,
         birth_date: createUserDto.birthDate,
-        user_type_id: createUserDto.userType ?? 3
+        user_type_id: createUserDto.userType ?? 3,
+        active: true
       }
     });
 
@@ -57,11 +58,16 @@ export class UsersService {
     }) : null;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`;
+  // }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.prisma.users.update({
+      where: { id: id },
+      data: {
+        active: false
+      }
+    });
   }
 }

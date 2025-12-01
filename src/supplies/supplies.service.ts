@@ -15,7 +15,8 @@ export class SuppliesService {
         supplier_id: createSupplyDto.supplier_id,
         supply_type_id: createSupplyDto.supply_type_id,
         price: parseInt(createSupplyDto.price),
-        min_stock: createSupplyDto.min_stock
+        min_stock: createSupplyDto.min_stock,
+        active: true
       }
     })
   }
@@ -33,6 +34,9 @@ export class SuppliesService {
 
   async findAll() {
     return this.prisma.supplies.findMany({
+      where: {
+        active: true
+      },
       include: {
         Suppliers: true,
       }
@@ -49,8 +53,11 @@ export class SuppliesService {
   }
 
   async remove(id: number) {
-    return this.prisma.supplies.delete({
-      where: { id }
+    return this.prisma.supplies.update({
+      where: { id },
+      data: {
+        active: false
+      }
     });
   }
 }

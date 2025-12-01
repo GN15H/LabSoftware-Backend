@@ -12,7 +12,8 @@ export class SuppliersService {
       data: {
         name: createSupplierDto.name,
         email: createSupplierDto.email,
-        phone: createSupplierDto.phone
+        phone: createSupplierDto.phone,
+        active: true
       }
     })
   }
@@ -31,6 +32,9 @@ export class SuppliersService {
 
   async findAll() {
     return this.prisma.suppliers.findMany({
+      where: {
+        active: true
+      },
       include: {
         Supplies: true,
       }
@@ -47,8 +51,11 @@ export class SuppliersService {
   }
 
   async remove(id: number) {
-    return this.prisma.suppliers.delete({
-      where: { id }
+    return this.prisma.suppliers.update({
+      where: { id },
+      data: {
+        active: false
+      }
     });
   }
 }

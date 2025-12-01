@@ -100,6 +100,7 @@ model Services {
   id                   Int                    @id @default(autoincrement())
   name                 String                 @db.VarChar(30)
   price                BigInt
+  active               Boolean
   Appointment_Services Appointment_Services[]
 }
 
@@ -114,6 +115,7 @@ model Suppliers {
   name     String     @db.VarChar(20)
   phone    String     @db.VarChar(20)
   email    String     @unique(map: "email") @db.VarChar(30)
+  active   Boolean
   Supplies Supplies[]
 }
 
@@ -125,6 +127,7 @@ model Supplies {
   amount               Int
   min_stock            Int
   price                Int
+  active               Boolean
   Appointment_Supplies Appointment_Supplies[]
   Suppliers            Suppliers              @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Supplies_ibfk_1")
   Supply_Types         Supply_Types           @relation(fields: [supply_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Supplies_ibfk_2")
@@ -154,6 +157,7 @@ model Users {
   password              String                  @db.VarChar(50)
   birth_date            DateTime                @db.Date
   user_type_id          Int
+  active                Boolean
   Appointments          Appointments[]
   Mechanics_Specialties Mechanics_Specialties[]
   User_Types            User_Types              @relation(fields: [user_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_ibfk_1")
