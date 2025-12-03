@@ -19,6 +19,12 @@ import { AppointmentsModule } from './appointments/appointments.module';
 import { PaymentsModule } from './payments/payments.module';
 import { SuppliesModule } from './supplies/supplies.module';
 import { SuppliersModule } from './suppliers/suppliers.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
+import { MailerModule as MailModule } from './mailer/mailer.module';
+import { EvidencesModule } from './evidences/evidences.module';
+import { AppointmentSuppliesModule } from './appointment-supplies/appointment-supplies.module';
 
 @Module({
   imports: [
@@ -29,6 +35,8 @@ import { SuppliersModule } from './suppliers/suppliers.module';
     SpecialtiesModule,
     VehicleTypesModule,
     SupplyTypesModule,
+    EvidencesModule,
+    AppointmentSuppliesModule,
     AuthModule,
     VehiclesModule,
     AppointmentsModule,
@@ -37,7 +45,25 @@ import { SuppliersModule } from './suppliers/suppliers.module';
     SuppliersModule,
     ConfigModule.forRoot(),
     PaymentsModule,
-    SuppliersModule
+    SuppliersModule,
+    MailModule,
+    MailerModule.forRoot({
+      transport: {
+        service: 'gmail',
+        auth: {
+          user: 'mandingoscrack@gmail.com',
+          pass: process.env.EMAIL_SECRET,   // <-- App Password from Google
+        },
+      },
+      defaults: {
+        from: '"Autolink Manager" <managerautolink@gmail.com>',
+      },
+      template: {
+        dir: join(__dirname, 'templates'),
+        adapter: new HandlebarsAdapter(),
+      },
+    }),
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService,

@@ -27,7 +27,9 @@ export class SuppliesService {
       where: { id: id },
       data: {
         name: updateSupplyDto.name,
-        amount: updateSupplyDto.amount
+        amount: updateSupplyDto.amount,
+        min_stock: updateSupplyDto.min_stock,
+        price: parseInt(updateSupplyDto.price),
       }
     })
   }

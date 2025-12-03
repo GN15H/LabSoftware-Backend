@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+// import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from './entities/user.entity';
 
@@ -27,7 +27,11 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.prisma.users.findMany();
+    return await this.prisma.users.findMany({
+      where: {
+        active: true
+      }
+    });
     // return 'huh';
   }
 

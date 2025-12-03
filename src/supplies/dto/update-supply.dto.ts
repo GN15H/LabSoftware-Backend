@@ -8,4 +8,13 @@ export class UpdateSupplyDto {
   @IsNotEmpty()
   @IsInt()
   amount: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  min_stock: number;
+
+  @IsNotEmpty()
+  @IsString()
+  price: string;
 }
+

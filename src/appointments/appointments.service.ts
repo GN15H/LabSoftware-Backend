@@ -4,10 +4,11 @@ import { UpdateAppointmentDto, UpdateAppointmentStateDto } from './dto/update-ap
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAppointment } from './domain/CreateAppointment';
 import { CreateProcAndServDto } from './dto/create-proc-serv.dto';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Injectable()
 export class AppointmentsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private mailerService: MailerService) { }
 
   async create(createAppointmentDto: CreateAppointmentDto) {
     const mechanics = await this.prisma.users.findMany({
@@ -124,6 +125,23 @@ export class AppointmentsService {
     const state = await this.prisma.appointment_States.findMany({
       where: { name: updateAppointmentStateDto.appointment_state }
     })
+
+    const appointment = await this.prisma.appointments.findUnique({
+      where: { id: id },
+      include: {
+        Vehicles: {
+          include: {
+            Users: true
+          }
+        }
+      }
+    })
+    console.log("emm ke putas hay aca?", appointment);
+
+    if (appointment?.Vehicles.Users.email) {
+      const sis = await this.mailerService.notifyAppointmentStateChante(appointment?.Vehicles.Users.email, `${appointment.Vehicles.brand} ${appointment.Vehicles.series} ${appointment.Vehicles.number_plate}`)
+      console.log("sis?", sis);
+    }
 
     return this.prisma.appointments.update({
       where: { id },

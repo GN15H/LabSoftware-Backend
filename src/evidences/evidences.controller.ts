@@ -2,10 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { EvidencesService } from './evidences.service';
 import { CreateEvidenceDto } from './dto/create-evidence.dto';
 import { UpdateEvidenceDto } from './dto/update-evidence.dto';
+import { MailerService } from 'src/mailer/mailer.service';
 
 @Controller('evidences')
 export class EvidencesController {
-  constructor(private readonly evidencesService: EvidencesService) {}
+  constructor(private readonly evidencesService: EvidencesService, private readonly mailService: MailerService) { }
+
+  @Post(':id')
+  send(@Param('id') id: string) {
+    return this.mailService.example(id);
+  }
 
   @Post()
   create(@Body() createEvidenceDto: CreateEvidenceDto) {
