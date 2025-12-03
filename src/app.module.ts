@@ -31,6 +31,7 @@ import { AppointmentSuppliesModule } from './appointment-supplies/appointment-su
     PrismaModule,
     UsersModule,
     UserTypesModule,
+    EvidencesModule,
     ServicesModule,
     SpecialtiesModule,
     VehicleTypesModule,

@@ -1,40 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { EvidencesService } from './evidences.service';
 import { CreateEvidenceDto } from './dto/create-evidence.dto';
-import { UpdateEvidenceDto } from './dto/update-evidence.dto';
-import { MailerService } from 'src/mailer/mailer.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Controller('evidences')
 export class EvidencesController {
-  constructor(private readonly evidencesService: EvidencesService, private readonly mailService: MailerService) { }
+  constructor(private readonly evidencesService: EvidencesService, private readonly cloudinary: CloudinaryService) { }
 
-  @Post(':id')
-  send(@Param('id') id: string) {
-    return this.mailService.example(id);
-  }
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('image'))
+  async upload(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('data') body: string
+  ) {
+    const parsedBody: CreateEvidenceDto = JSON.parse(body);
+    console.log(parsedBody);        // { title: "...", description: "...", price: "25" }
+    console.log(file);        // image file uploaded
 
-  @Post()
-  create(@Body() createEvidenceDto: CreateEvidenceDto) {
-    return this.evidencesService.create(createEvidenceDto);
-  }
+    const result = await this.cloudinary.uploadImageFromBuffer(file);
+    const createdEvidence = await this.evidencesService.create(parsedBody, result);
 
-  @Get()
-  findAll() {
-    return this.evidencesService.findAll();
-  }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.evidencesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEvidenceDto: UpdateEvidenceDto) {
-    return this.evidencesService.update(+id, updateEvidenceDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.evidencesService.remove(+id);
+    return { ...createdEvidence, result };
   }
 }
