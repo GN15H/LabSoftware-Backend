@@ -1,7 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
-  binaryTargets = ["native","linux-musl-openssl-3.0.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -39,19 +38,21 @@ model Appointment_Supplies {
 }
 
 model Appointments {
-  id                   Int                    @id @default(autoincrement())
-  appointment_date     DateTime               @db.DateTime(0)
-  mechanic_id          Int
-  bay_id               Int
-  appointment_state_id Int
-  vehicle_id           Int
-  Appointment_Services Appointment_Services[]
-  Appointment_Supplies Appointment_Supplies[]
-  Users                Users                  @relation(fields: [mechanic_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Appointments_ibfk_1")
-  Bays                 Bays                   @relation(fields: [bay_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Appointments_ibfk_2")
-  Appointment_States   Appointment_States     @relation(fields: [appointment_state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Appointments_ibfk_3")
-  Vehicles             Vehicles               @relation(fields: [vehicle_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Appointments_ibfk_4")
-  Evidences            Evidences[]
+  id                     Int                      @id @default(autoincrement())
+  appointment_date       DateTime                 @db.DateTime(0)
+  mechanic_id            Int
+  bay_id                 Int
+  appointment_state_id   Int
+  vehicle_id             Int
+  Appointment_Procedures Appointment_Procedures[]
+  Appointment_Services   Appointment_Services[]
+  Appointment_Supplies   Appointment_Supplies[]
+  Users                  Users                    @relation(fields: [mechanic_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Appointments_ibfk_1")
+  Bays                   Bays                     @relation(fields: [bay_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Appointments_ibfk_2")
+  Appointment_States     Appointment_States       @relation(fields: [appointment_state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Appointments_ibfk_3")
+  Vehicles               Vehicles                 @relation(fields: [vehicle_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Appointments_ibfk_4")
+  Evidences              Evidences[]
+  Payments               Payments[]
 
   @@index([appointment_state_id], map: "appointment_state_id")
   @@index([bay_id], map: "bay_id")
@@ -98,6 +99,8 @@ model Mechanics_Specialties {
 model Services {
   id                   Int                    @id @default(autoincrement())
   name                 String                 @db.VarChar(30)
+  price                BigInt
+  active               Boolean
   Appointment_Services Appointment_Services[]
 }
 
@@ -112,6 +115,7 @@ model Suppliers {
   name     String     @db.VarChar(20)
   phone    String     @db.VarChar(20)
   email    String     @unique(map: "email") @db.VarChar(30)
+  active   Boolean
   Supplies Supplies[]
 }
 
@@ -120,6 +124,10 @@ model Supplies {
   name                 String                 @db.VarChar(30)
   supplier_id          Int
   supply_type_id       Int
+  amount               Int
+  min_stock            Int
+  price                Int
+  active               Boolean
   Appointment_Supplies Appointment_Supplies[]
   Suppliers            Suppliers              @relation(fields: [supplier_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Supplies_ibfk_1")
   Supply_Types         Supply_Types           @relation(fields: [supply_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Supplies_ibfk_2")
@@ -149,6 +157,7 @@ model Users {
   password              String                  @db.VarChar(50)
   birth_date            DateTime                @db.Date
   user_type_id          Int
+  active                Boolean
   Appointments          Appointments[]
   Mechanics_Specialties Mechanics_Specialties[]
   User_Types            User_Types              @relation(fields: [user_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Users_ibfk_1")
@@ -176,4 +185,24 @@ model Vehicles {
 
   @@index([owner_id], map: "owner_id")
   @@index([vehicle_type_id], map: "vehicle_type_id")
+}
+
+model Appointment_Procedures {
+  id             Int          @id @default(autoincrement())
+  appointment_id Int
+  description    String?      @db.VarChar(255)
+  Appointments   Appointments @relation(fields: [appointment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Appointment_Procedures_ibfk_1")
+
+  @@index([appointment_id], map: "appointment_id")
+}
+
+model Payments {
+  id             Int          @id @default(autoincrement())
+  total          BigInt
+  date           DateTime     @db.DateTime(0)
+  method         String       @db.VarChar(20)
+  appointment_id Int
+  Appointments   Appointments @relation(fields: [appointment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Payments_ibfk_1")
+
+  @@index([appointment_id], map: "appointment_id")
 }
