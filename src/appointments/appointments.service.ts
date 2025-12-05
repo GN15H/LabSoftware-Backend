@@ -215,6 +215,41 @@ export class AppointmentsService {
     ))
   }
 
+  async findByPlateNumber(plateNumber: string) {
+    const data = await this.prisma.appointments.findMany({
+      where: {
+        Vehicles: {
+          number_plate: {
+            equals: plateNumber
+          }
+        }
+      },
+      include: {
+        Vehicles: true,
+        Bays: true,
+        Users: true,
+        Evidences: true,
+        Appointment_Services: {
+          include: {
+            Services: true
+          }
+        },
+        Appointment_Procedures: true,
+        Payments: true,
+      }
+    })
+    return data.map(d => (
+      {
+        ...d,
+        Payments: d.Payments.map(p => ({
+          ...p,
+          total: p.total.toString()
+        })),
+      }
+    ))
+  }
+
+
   async findByMechanic(id: number) {
     const data = await this.prisma.appointments.findMany({
       where: {
