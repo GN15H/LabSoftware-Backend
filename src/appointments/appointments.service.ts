@@ -159,6 +159,7 @@ export class AppointmentsService {
         Payments: true,
         Appointment_States: true,
         Vehicles: true,
+        Evidences: true,
         Appointment_Services: {
           include: {
             Services: true
@@ -193,6 +194,7 @@ export class AppointmentsService {
         Vehicles: true,
         Bays: true,
         Users: true,
+        Evidences: true,
         Appointment_Services: {
           include: {
             Services: true
@@ -222,6 +224,7 @@ export class AppointmentsService {
         Vehicles: true,
         Bays: true,
         Users: true,
+        Evidences: true,
         Appointment_Services: {
           include: {
             Services: true
