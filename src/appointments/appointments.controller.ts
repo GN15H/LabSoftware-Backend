@@ -44,6 +44,11 @@ export class AppointmentsController {
     return this.appointmentsService.findByUser(+id);
   }
 
+  @Get('car/:id')
+  getByPlateNumber(@Param('id') id: string) {
+    return this.appointmentsService.findByPlateNumber(id);
+  }
+
   @Get('mechanic/:id')
   getByMechanic(@Param('id') id: string) {
     return this.appointmentsService.findByMechanic(+id);

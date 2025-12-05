@@ -39,6 +39,15 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
+  async findMechanics() {
+    return await this.prisma.users.findMany({
+      where: {
+        user_type_id: 2,
+        active: true
+      }
+    });
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     // email;
     // return new User({ id: 1, dni: "s", name: "name", lastName: "joder", email: "hermano", birthDate: new Date(), userTypeId: 1, password: 'jiji' });
